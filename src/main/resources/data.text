@@ -1,0 +1,6 @@
+INSERT INTO address (address1, address2, postalcode, city, state) 
+VALUES ('123 Main St', 'Apt 4B', '123456', 'Sample City', 'Sample State');
+
+
+INSERT INTO guest (FIRST_NAME, LAST_NAME , BIRTH_DATE , LAST_STAY  , phno, address_id, create_Date, purge_Date) 
+VALUES ('John', 'Doe', '1980-01-01', '2023-07-15', '1234567890', 1, '2024-08-12', '2025-08-12');
