@@ -5,6 +5,8 @@ public class GuestCommInfo
 	private String firstName;
 	private String email;
 	private String phno;
+	private Long guestID;
+	private String action;
 	
 	public GuestCommInfo()
 	{
@@ -33,6 +35,22 @@ public class GuestCommInfo
 	public void setPhno(String phno)
 	{
 		this.phno = phno;
+	}
+	public Long getGuestID()
+	{
+		return guestID;
+	}
+	public void setGuestID(Long guestID)
+	{
+		this.guestID = guestID;
+	}
+	public String getAction()
+	{
+		return action;
+	}
+	public void setAction(String action)
+	{
+		this.action = action;
 	}
 	
 }

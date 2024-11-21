@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,7 @@ import com.sovon9.GuestInfo_service.dto.GuestCommInfo;
 import com.sovon9.GuestInfo_service.dto.GuestInfoSearchCriteria;
 import com.sovon9.GuestInfo_service.model.Guest;
 import com.sovon9.GuestInfo_service.service.GuestInfoService;
+import com.sovon9.GuestInfo_service.service.KafkaProducerService;
 
 @RestController
 @RequestMapping("/guestinfo-service")
@@ -25,11 +28,28 @@ public class GuestInfoController {
 
 	@Autowired
 	private GuestInfoService service;
+	@Autowired
+	private KafkaProducerService producerService;
 	
 	@PostMapping("/guestinfo")
-	public Guest saveGuestInfo(@RequestBody Guest guest)
+	public ResponseEntity<Guest> saveGuestInfo(@RequestBody Guest guest)
 	{
-		return service.saveGuestInfoData(guest);
+		ResponseEntity<Guest> saveGuestInfoData = null;
+		try
+		{
+			saveGuestInfoData = ResponseEntity.status(HttpStatus.CREATED).body(service.saveGuestInfoData(guest));
+			GuestCommInfo guestCommInfo = getGuestEmailCommInfo(guest.getGuestID());
+			if (null != guestCommInfo && null!=guestCommInfo.getEmail())
+			{
+				guestCommInfo.setAction("GUESTINFO");
+				producerService.produce(guestCommInfo);
+			}
+		}
+		catch(Exception e)
+		{
+			saveGuestInfoData = ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+		return saveGuestInfoData;
 	}
 	
 	@GetMapping("/guestinfo/{guestID}")
@@ -61,6 +81,7 @@ public class GuestInfoController {
 		Guest guest = fetchGuestInfoData.orElse(null);
 		if(null!=guest)
 		{
+			commInfo.setGuestID(guestID);
 			commInfo.setFirstName(guest.getFirstName());
 			commInfo.setEmail(guest.getEmail());
 			commInfo.setPhno(guest.getPhno());
