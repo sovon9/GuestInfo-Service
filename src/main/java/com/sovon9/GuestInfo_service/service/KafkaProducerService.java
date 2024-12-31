@@ -2,6 +2,8 @@ package com.sovon9.GuestInfo_service.service;
 
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
@@ -12,6 +14,7 @@ import com.sovon9.GuestInfo_service.dto.GuestCommInfo;
 @Service
 public class KafkaProducerService
 {
+	Logger LOGGER = LoggerFactory.getLogger(KafkaProducerService.class);
 	public KafkaTemplate<String, Object> kafkaTemplate;
 	
 	@Autowired
@@ -26,11 +29,11 @@ public class KafkaProducerService
 		future.whenComplete((result, exception)->{
 			if(null==exception)
 			{
-				System.out.print("Sucessfully produced to partition: "+result.getRecordMetadata().partition());
+				LOGGER.error("Sucessfully produced to partition: "+result.getRecordMetadata().partition());
 			}
 			else
 			{
-				System.out.print(exception.getMessage());
+				LOGGER.error("Kafka exception: {}", exception.getMessage(), exception);
 			}
 		});
 	}

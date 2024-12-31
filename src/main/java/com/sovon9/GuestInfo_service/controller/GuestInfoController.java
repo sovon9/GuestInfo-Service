@@ -4,9 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.KafkaException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +29,7 @@ import com.sovon9.GuestInfo_service.service.KafkaProducerService;
 @RequestMapping("/guestinfo-service")
 public class GuestInfoController {
 
+	Logger LOGGER = LoggerFactory.getLogger(GuestInfoController.class);
 	@Autowired
 	private GuestInfoService service;
 	@Autowired
@@ -44,6 +48,10 @@ public class GuestInfoController {
 				guestCommInfo.setAction("GUESTINFO");
 				producerService.produce(guestCommInfo);
 			}
+		}
+		catch(KafkaException e)
+		{
+			LOGGER.error("Kafka exception: {}", e.getMessage(), e);
 		}
 		catch(Exception e)
 		{
@@ -74,19 +82,19 @@ public class GuestInfoController {
 	@GetMapping("/guestinfo/guestCommInfo/{guestID}")
 	public GuestCommInfo getGuestEmailCommInfo(@PathVariable("guestID") Long guestID)
 	{
-		GuestCommInfo commInfo = new GuestCommInfo();
+		GuestCommInfo contactInfo = new GuestCommInfo();
 		Optional<Guest> fetchGuestInfoData = service.fetchGuestInfoData(guestID);
 		
 		// if guest data is found populate GuestCommInfo
 		Guest guest = fetchGuestInfoData.orElse(null);
 		if(null!=guest)
 		{
-			commInfo.setGuestID(guestID);
-			commInfo.setFirstName(guest.getFirstName());
-			commInfo.setEmail(guest.getEmail());
-			commInfo.setPhno(guest.getPhno());
+			contactInfo.setGuestID(guestID);
+			contactInfo.setFirstName(guest.getFirstName());
+			contactInfo.setEmail(guest.getEmail());
+			contactInfo.setPhno(guest.getPhno());
 		}
-		return commInfo;
+		return contactInfo;
 	}
 	
 }

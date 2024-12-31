@@ -1,24 +1,16 @@
 package com.sovon9.GuestInfo_service.dto;
 
-import java.io.Serializable;
-
-public class GuestCommInfo implements Serializable
+public class GuestContactInfo
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 	private String firstName;
 	private String email;
 	private String phno;
-	private Long resID;
-	private Long guestID;
 	private String action;
-	private int roomNum;
 	
-	public GuestCommInfo()
+	public GuestContactInfo()
 	{
 		super();
+		// TODO Auto-generated constructor stub
 	}
 	public String getFirstName()
 	{
@@ -44,22 +36,6 @@ public class GuestCommInfo implements Serializable
 	{
 		this.phno = phno;
 	}
-	public Long getResID()
-	{
-		return resID;
-	}
-	public void setResID(Long resID)
-	{
-		this.resID = resID;
-	}
-	public Long getGuestID()
-	{
-		return guestID;
-	}
-	public void setGuestID(Long guestID)
-	{
-		this.guestID = guestID;
-	}
 	public String getAction()
 	{
 		return action;
@@ -68,13 +44,6 @@ public class GuestCommInfo implements Serializable
 	{
 		this.action = action;
 	}
-	public int getRoomNum()
-	{
-		return roomNum;
-	}
-	public void setRoomNum(int roomNum)
-	{
-		this.roomNum = roomNum;
-	}
+	
 	
 }
